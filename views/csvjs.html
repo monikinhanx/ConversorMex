@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="file" id="inputCSV" onchange="pegaCSV(this)">
+    <div id="CSVsaida"></div>
+</body>
+
+<script>
+    var leitorDeCSV = new FileReader()
+    window.onload = function init() {
+        leitorDeCSV.onload = leCSV;
+    }
+
+    function pegaCSV(inputFile) {
+        var file = inputFile.files[0];
+        leitorDeCSV.readAsText(file);
+    }
+
+    function leCSV(evt) {
+
+        var fileArr = evt.target.result.split('\n');
+        var strDiv = '';
+        var key = [];
+        var value = "";
+
+        for (var i = 0; i < fileArr.length; i++) {
+            var fileLine = fileArr[i].split(',');
+            for (var j = 0; j < fileLine.length; j++) {
+                // if(fileLine[j].trim().search('Z') == (fileLine[j].trim().length - 1)){
+                //     console.log(fileLine[j].trim());
+                // }
+                // strDiv += '<td>' + fileLine[j].trim() + '</td>';
+                // console.log(fileLine[j].trim());
+                if(i == 0){
+                    key.push(fileLine[j].trim());
+                }
+                
+            }
+        }
+
+        console.log(key);
+        var CSVsaida = document.getElementById('CSVsaida');
+        CSVsaida.innerHTML = strDiv;
+    }
+</script>
+
+</html>

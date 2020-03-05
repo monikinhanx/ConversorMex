@@ -1,160 +1,171 @@
 <?php
 
-function after ($texto1, $string)
-{
-    if (!is_bool(strpos($string, $texto1)))
-    return substr($string, strpos($string,$texto1)+strlen($texto1));
-};
+    set_time_limit(100000);
 
-function before ($texto1, $string)
-{
-    return substr($string, 0, strpos($string, $texto1));
-};
+    include_once('views/includes/substrfunctions.php');
 
-function between ($texto1, $texto2, $string)
-{
-    return before ($texto2, after($texto1, $string));
-};
+    $path = __DIR__."/chat/";
+    $diretorio = dir($path);
+    $resultado = [];
+    
+    echo "Lista de Arquivos do diretório '\<strong>".$path."</strong>':<br />";
+    
+    while($arquivo = $diretorio -> read()){
+        
+        if(strlen($arquivo) > 3){
+            echo "<a href='".$path.$arquivo."'>".$arquivo."</a><br />";
+    
+            $delimitador = ',';
+            $cerca = '"';
+            $f = fopen($path.$arquivo, 'r');
+            if ($f) { 
+                $cabecalho = fgetcsv($f, 0, $delimitador, $cerca);
+                $string = "";
+    
+                while (!feof($f)) { 
+                    $linha = fgetcsv($f, 0, $delimitador, $cerca);
+                    if (!$linha) {
+                        continue;
+                    }
 
-function strrevpos($instr, $needle)
-{
-    $rev_pos = strpos (strrev($instr), strrev($needle));
-    if ($rev_pos===false) return false;
-    else return strlen($instr) - $rev_pos - strlen($needle);
-};
+                    var_dump($linha);
+                    
+                    echo "<BR><BR><BR>";
+                    
+                    // var_dump($linha);
 
-function before_last ($texto1, $string)
-{
-    return substr($string, 0, strrevpos($string, $texto1));
-};
+                    $registro = array_combine($cabecalho, $linha);
 
-$path = __DIR__."/chat/";
-$diretorio = dir($path);
-$resultado = [];
-
-echo "Lista de Arquivos do diretório '\<strong>".$path."</strong>':<br />";
-
-while($arquivo = $diretorio -> read()){
-    echo "<a href='".$path.$arquivo."'>".$arquivo."</a><br />";
-
-    if(strlen($arquivo) > 3){
-
-        $delimitador = ',';
-        $cerca = '"';
-        $f = fopen($path.$arquivo, 'r');
-        if ($f) { 
-            $cabecalho = fgetcsv($f, 0, $delimitador, $cerca);
-            $string = "";
-
-            while (!feof($f)) { 
-                $linha = fgetcsv($f, 0, $delimitador, $cerca);
-                if (!$linha) {
-                    continue;
+                    // echo addslashes($registro['Text'])."<br>";
+                    // exit;
+                    $data = before("T", $registro['PostDateTime'])." ".between("T", ".", $registro['PostDateTime']);
+                    
+                    if(empty($string)){
+                        $string = "{
+                \"Metadata\": [
+                    {
+                        \"Key\": \"ClientCaptureDate\",
+                        \"Value\": \"$data\"
+                    },
+                    {
+                        \"Key\": \"ClientID\",
+                        \"Value\": \"{$registro['source_id']}\"
+                    },
+                    {
+                        \"Key\": \"Agent\",
+                        \"Value\": \"{$registro['agent']}\"
+                    },
+                    {
+                        \"Key\": \"Dept\",
+                        \"Value\": \"{$registro['actor_affiliation']}\"
+                    },
+                    {
+                        \"Key\": \"ExitStatus\",
+                        \"Value\": \"{$registro['status']}\"
+                    },
+                    {
+                        \"Key\": \"UDF_text_01\",
+                        \"Value\": \"{$registro['subject_id']}\"
+                    },
+                    {
+                        \"Key\": \"UDF_text_02\",
+                        \"Value\": \"{$registro['activity_type']}\"
+                    },
+                    {
+                        \"Key\": \"UDF_text_03\",
+                        \"Value\": \"{$registro['actor_level']}\"
+                    },
+                    {
+                        \"Key\": \"UDF_text_04\",
+                        \"Value\": \"{$registro['actor_squad']}\"
+                    },
+                    {
+                        \"Key\": \"UDF_text_05\",
+                        \"Value\": \"{$registro['badges_interpretation']}\"
+                    },
+                    {
+                        \"Key\": \"UDF_text_06\",
+                        \"Value\": \"{$registro['selected_job_squad']}\"
+                    },
+                    {
+                        \"Key\": \"UDF_text_07\",
+                        \"Value\": \"{$registro['selected_reason']}\"
+                    },
+                    {
+                        \"Key\": \"UDF_text_08\",
+                        \"Value\": \"{$registro['actor_maturity']}\"
+                    },
+                    {
+                        \"Key\": \"UDF_text_09\",
+                        \"Value\": \"{$registro['skip']}\"
+                    },
+                    {
+                        \"Key\": \"UDF_text_10\",
+                        \"Value\": \"{$registro['account__id']}\"
+                    },
+                    {
+                        \"Key\": \"UDF_text_11\",
+                        \"Value\": \"{$registro['customer_tag_formal']}\"
+                    },
+                    {
+                        \"Key\": \"UDF_text_12\",
+                        \"Value\": \"{$registro['customer_tag_deficiente']}\"
+                    },
+                    {
+                        \"Key\": \"UDF_Int_01\",
+                        \"Value\": \"{$registro['net_time_spent']}\"
+                    }
+                    ],
+                \"MediaType\": \"Chat\",
+                \"ClientCaptureDate\": \"{$registro['PostDateTime']}\",
+                \"SourceId\": \"TeraVoz\",
+                \"Transcript\": [";
+                    }
+                    
+                    $texto = addslashes($registro['Text']);
+    
+                    $chat = "{
+                        \"Speaker\": {$registro['Speaker']},
+                        \"Text\": \"{$texto}\",
+                        \"PostDateTime\": \"{$registro['PostDateTime']}\",
+                        \"TextInformation\": \"{$registro['TextInformation']}\"
+                    },";
+    
+                    $string .= $chat;
+    
                 }
+    
+                $endData = "]
+                }";
+    
+                $string = before_last(",", $string);
+                
+                $string .= $endData;
 
-                $registro = array_combine($cabecalho, $linha);
-                $data = before("T", $registro['PostDateTime'])." ".between("T", ".", $registro['PostDateTime']);
+                echo "<br><br>";
 
-                if(empty($string)){
-                    $string = "{
-            \"Metadata\": [
-                {
-                    \"Key\": \"UDF_text_01\",
-                    \"Value\": \"Nubank\"
-                },
-                {
-                    \"Key\": \"ClientID\",
-                    \"Value\": \"{$registro['source_id']}\"
-                },
-                {
-                    \"Key\": \"UDF_text_10\",
-                    \"Value\": \"{$registro['subject_id']}\"
-                },
-                {
-                    \"Key\": \"UDF_text_09\",
-                    \"Value\": \"{$registro['agent']}\"
-                },
-                {
-                    \"Key\": \"Agent\",
-                    \"Value\": \"{$registro['agent']}\"
-                },
-                {
-                    \"Key\": \"Dept\",
-                    \"Value\": \"{$registro['actor_squad']}\"
-                },
-                {
-                    \"Key\": \"ExitStatus\",
-                    \"Value\": \"{$registro['status']}\"
-                },
-                {
-                    \"Key\": \"UDF_text_13\",
-                    \"Value\": \"{$registro['customer_tag_formal']}\"
-                },
-                {
-                    \"Key\": \"UDF_text_16\",
-                    \"Value\": \"{$registro['customer_tag_deficiente']}\"
-                },
-                {
-                    \"Key\": \"ClientCaptureDate\",
-                    \"Value\": \"$data\"
-                },
-                {
-                    \"Key\": \"UDF_text_12\",
-                    \"Value\": \"{$registro['activity_type']}\"
-                }
-                ],
-            \"MediaType\": \"Chat\",
-            \"ClientCaptureDate\": \"{$registro['PostDateTime']}\",
-            \"SourceId\": \"TradeCall\",
-            \"Transcript\": [";
-                }
+                var_dump($string);
+                exit;
 
-                $chat = "{
-                    \"Speaker\": {$registro['Speaker']},
-                    \"Text\": \"{$registro['Text']}\",
-                    \"PostDateTime\": \"{$registro['PostDateTime']}\",
-                    \"TextInformation\": \"{$registro['TextInformation']}\"
-                },";
+                $context = stream_context_create(array(
+                    'http' => array(
+                        'method' => 'POST',                    
+                        'header' => "Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYXBpLmNhbGxtaW5lci5uZXQiLCJhdWQiOiJodHRwOi8vYXBpLmNhbGxtaW5lci5uZXQiLCJuYmYiOjE1ODI4MjcyMTYsImV4cCI6MTY0NTg5OTIxNiwidW5pcXVlX25hbWUiOiJNRVgtTnViYW5rX0luZ2VzdGlvblVzZXJfZGEyOGQ1M2E1NjVjNDY4MDlhNzZiMDIwODdlMzlhNzVAY2FsbG1pbmVyLmNvbSIsImVtYWlsIjoiTUVYLU51YmFua19Jbmdlc3Rpb25Vc2VyX2RhMjhkNTNhNTY1YzQ2ODA5YTc2YjAyMDg3ZTM5YTc1QGNhbGxtaW5lci5jb20iLCJhY3RvcnQiOiJNRVgtTnViYW5rIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbG9jYWxpdHkiOiJlbi1VUyIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvZXhwaXJhdGlvbiI6IjAyLzI2LzIwMjIgMTg6MTM6MzYifQ.Mz_WmcC5wDUiEbehFQQZ2bssshS6n1eWu_NkF4X4mL8\r\n"."Content-type: application/json; charset=utf-8\r\n",
+                        'content' => $string                            
+                    )
+                ));
+    
+                $contents = file_get_contents("https://ingestion.callminer.net/api/transcript", null, $context);            
+                $resposta = json_decode($contents);
 
-                $transcript = "";
+                array_push($resultado, $resposta);
 
-                $transcript .= $chat;
-
-                $string .= $chat;
-
+                fclose($f);
             }
-
-            $endData = "]
-            }";
-
-            $string = before_last(",", $string);
-            
-            $string .= $endData;
-
-            $servidor = "https://ingestion.callminer.net/api/transcript";
-
-            $context = stream_context_create(array(
-                'http' => array(
-                    'method' => 'POST',                    
-                    'header' => "Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Ik51dmV0b05HTV9Jbmdlc3Rpb25Vc2VyXzYyMDNjMmUyMjc0MDQ2MmJhZTVhMDU3YWY4OWU3NTg0QGNhbGxtaW5lci5jb20iLCJlbWFpbCI6Ik51dmV0b05HTV9Jbmdlc3Rpb25Vc2VyXzYyMDNjMmUyMjc0MDQ2MmJhZTVhMDU3YWY4OWU3NTg0QGNhbGxtaW5lci5jb20iLCJhY3RvcnQiOiJOdXZldG8iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9sb2NhbGl0eSI6ImVuLVVTIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9leHBpcmF0aW9uIjoiMDIvMDYvMjAyMiAyMTowMTowNiIsIm5iZiI6MTU4MTEwOTI2NiwiZXhwIjoxNjQ0MTgxMjY2LCJpYXQiOjE1ODExMDkyNjYsImlzcyI6Imh0dHA6Ly9hcGkuY2FsbG1pbmVyLm5ldCIsImF1ZCI6Imh0dHA6Ly9hcGkuY2FsbG1pbmVyLm5ldCJ9.4ofZ680TAGqwtuXRXo4gjXyn1VDNtZqI7l9wYfw3XJ8\r\n".
-                                "Content-type: application/json; charset=utf-8\r\n",
-                    'content' => $string                               
-                )
-            ));
-
-            $contents = file_get_contents($servidor, null, $context);            
-            $resposta = json_decode($contents);
-
-            array_push($resultado, $resposta);
-
-            
-            fclose($f);
-        }
-    }  
-}
-$diretorio -> close();
-
-var_dump($resultado);
-// echo $resposta;
+        }  
+    }
+    $diretorio -> close();
+    
+    var_dump($resultado);
 
 ?>

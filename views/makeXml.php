@@ -7,7 +7,7 @@
 </head>
 <body>
     <?php
-        $path = __DIR__."/origem/modelo1.xml";        
+        $path = __DIR__."/origem/modelo8.xml";        
         $xml = simplexml_load_file($path);
 
         foreach($xml->Recording as $reg){
@@ -17,6 +17,28 @@
 <recordings>
     <recording>
         <Projeto>STEFANINI</Projeto>
+        <Call_Id>{$reg->Info->RecordingId}</Call_Id>
+        <Nome_Do_Arquivo>{$reg->Info->Filename}</Nome_Do_Arquivo>
+        <Telefone>{$reg->CallData->CallingParty}</Telefone>
+        <Data_Hora_Inicio>$data_hora</Data_Hora_Inicio>
+        <Id_Operador>{$reg->CallData->CallId}</Id_Operador>
+        <Nome_Operador>{$reg->Info->Agent}</Nome_Operador>
+        <Supervisor>João Santos</Supervisor>
+        <Gestor>-</Gestor>
+        <Campanha>NESTLE</Campanha>
+        <Celula>{$reg->CallData->Service}</Celula>
+        <Site>PINHEIROS</Site>
+    </recording>
+</recordings>";
+            file_put_contents($nome_arquivo, $string);
+        }
+    ?>
+</body>
+</html>
+
+
+
+        <!-- <Projeto>STEFANINI</Projeto>
         <Id_Venda>{$reg->Info->RecordingId}</Id_Venda>
         <Id_Operador>{$reg->CallData->CallId}</Id_Operador>
         <Nome_Operador>{$reg->Info->Agent}</Nome_Operador>
@@ -26,11 +48,4 @@
         <Data_Hora_Inicio>$data_hora</Data_Hora_Inicio>
         <Nome_Do_Arquivo>{$reg->Info->Filename}</Nome_Do_Arquivo>
         <Campanha>NESTLE</Campanha>
-        <Tipificacao>{$reg->CallData->Service}</Tipificacao>
-    </recording>
-</recordings>";
-            file_put_contents($nome_arquivo, $string);
-        }
-    ?>
-</body>
-</html>
+        <Tipificacao>{$reg->CallData->Service}</Tipificacao> -->

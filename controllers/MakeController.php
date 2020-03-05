@@ -11,6 +11,9 @@
                 case "csv":
                     $this->viewCsv();
                 break;
+                case "teste":
+                    $this->viewTeste();
+                break;
             }
         }
 
@@ -22,6 +25,9 @@
         }
         private function viewCsv(){
             include "views/makeCsv.php";
+        }
+        private function viewTeste(){
+            include "views/teste.php";
         }
     }
 ?>

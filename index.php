@@ -17,5 +17,10 @@
             $controller = new MakeController();
             $controller->acao($rotas);
         break;
+        case "teste":
+            include "controllers/MakeController.php";
+            $controller = new MakeController();
+            $controller->acao($rotas);
+        break;
     }
 ?>
