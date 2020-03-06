@@ -12,6 +12,11 @@
             $controller = new MakeController();
             $controller->acao($rotas);
         break;
+        case "edit":
+            include "controllers/MakeController.php";
+            $controller = new MakeController();
+            $controller->acao($rotas);
+        break;
         case "csv":
             include "controllers/MakeController.php";
             $controller = new MakeController();

@@ -8,6 +8,9 @@
                 case "xml":
                     $this->viewXml();
                 break;
+                case "edit":
+                    $this->editXml();
+                break;
                 case "csv":
                     $this->viewCsv();
                 break;
@@ -22,6 +25,9 @@
         }
         private function viewXml(){
             include "views/makeXml.php";
+        }
+        private function editXml(){
+            include "views/editXml.php";
         }
         private function viewCsv(){
             include "views/makeCsv.php";

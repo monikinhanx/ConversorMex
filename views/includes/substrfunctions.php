@@ -1,29 +1,58 @@
 <?php
-    function after ($texto1, $string)
+    function after ($texto1, $inthat)
     {
-        if (!is_bool(strpos($string, $texto1)))
-        return substr($string, strpos($string,$texto1)+strlen($texto1));
+        if (!is_bool(strpos($inthat, $texto1)))
+        return substr($inthat, strpos($inthat,$texto1)+strlen($texto1));
     };
-    
-    function before ($texto1, $string)
+
+    function after_last ($texto1, $inthat)
     {
-        return substr($string, 0, strpos($string, $texto1));
+        if (!is_bool(strrevpos($inthat, $texto1)))
+        return substr($inthat, strrevpos($inthat, $texto1)+strlen($texto1));
     };
-    
-    function between ($texto1, $texto2, $string)
+
+    function before ($texto1, $inthat)
     {
-        return before ($texto2, after($texto1, $string));
+        return substr($inthat, 0, strpos($inthat, $texto1));
     };
-    
-    function strrevpos($instr, $needle)
+
+    function before_last ($texto1, $inthat)
     {
-        $rev_pos = strpos (strrev($instr), strrev($needle));
-        if ($rev_pos===false) return false;
-        else return strlen($instr) - $rev_pos - strlen($needle);
+        return substr($inthat, 0, strrevpos($inthat, $texto1));
     };
-    
-    function before_last ($texto1, $string)
+
+    function between ($texto1, $that, $inthat)
     {
-        return substr($string, 0, strrevpos($string, $texto1));
+        return before ($that, after($texto1, $inthat));
     };
+
+    function between_last ($texto1, $that, $inthat)
+    {
+        return after_last($texto1, before_last($that, $inthat));
+    };
+
+    // after ('@', 'biohazard@online.ge');
+    //returns 'online.ge'
+    //from the first occurrence of '@'
+
+    // before ('@', 'biohazard@online.ge');
+    //returns 'biohazard'
+    //from the first occurrence of '@'
+
+    // between ('@', '.', 'biohazard@online.ge');
+    //returns 'online'
+    //from the first occurrence of '@'
+
+    // after_last ('[', 'sin[90]*cos[180]');
+    //returns '180]'
+    //from the last occurrence of '['
+
+    // before_last ('[', 'sin[90]*cos[180]');
+    //returns 'sin[90]*cos['
+    //from the last occurrence of '['
+
+    // between_last ('[', ']', 'sin[90]*cos[180]');
+    //returns '180'
+    //from the last occurrence of '['
 ?>
+
