@@ -3,8 +3,6 @@
     padding: 0;
     box-sizing: border-box;
     font-size: 16px;
-    /* overflow: hidden; */
-
 }
 
 body{
@@ -24,7 +22,6 @@ main{
 
 .box{
     width: 45%;
-    /* height: 50%; */
     background-color: #fff;
     border-radius: 2rem;
     margin-right: 5%;

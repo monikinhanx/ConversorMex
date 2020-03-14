@@ -31,6 +31,13 @@
         return after_last($texto1, before_last($that, $inthat));
     };
 
+    function strrevpos($instr, $needle)
+    {
+        $rev_pos = strpos (strrev($instr), strrev($needle));
+        if ($rev_pos===false) return false;
+        else return strlen($instr) - $rev_pos - strlen($needle);
+    };
+
     // after ('@', 'biohazard@online.ge');
     //returns 'online.ge'
     //from the first occurrence of '@'

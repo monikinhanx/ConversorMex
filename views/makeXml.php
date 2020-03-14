@@ -7,11 +7,11 @@
 </head>
 <body>
     <?php
-        $path = __DIR__."/origem/modelo8.xml";        
+        $path = __DIR__."/origem/10-03.xml";        
         $xml = simplexml_load_file($path);
 
         foreach($xml->Recording as $reg){
-            $nome_arquivo = __DIR__."/destino/".substr($reg->Info->Filename, 0, strpos($reg->Info->Filename, ".wav")).".xml";
+            $nome_arquivo = __DIR__."/xml/".substr($reg->Info->Filename, 0, strpos($reg->Info->Filename, ".wav")).".xml";
             $data_hora = substr($reg->Info->RecordingDateTime, 0, strpos($reg->Info->RecordingDateTime, ".000"));
             $string = "<?xml version='1.0' encoding='UTF-8'?>
 <recordings>
@@ -49,3 +49,28 @@
         <Nome_Do_Arquivo>{$reg->Info->Filename}</Nome_Do_Arquivo>
         <Campanha>NESTLE</Campanha>
         <Tipificacao>{$reg->CallData->Service}</Tipificacao> -->
+
+
+        
+
+            <!-- $listaAgentes = ["total"=>0];
+
+        foreach($xml->Recording as $reg){
+            echo $reg->Info->Agent."<br>";
+            $result = array_key_exists("{$reg->Info->Agent}", $listaAgentes);
+            var_dump($result);
+            echo "<br>";
+            // echo $result;
+            $tot = $listaAgentes["total"];
+            $tot++;
+            $listaAgentes["total"] = $tot;
+            if(array_key_exists("{$reg->Info->Agent}", $listaAgentes)){
+                $cont = $listaAgentes["{$reg->Info->Agent}"];
+                $cont++;
+                $listaAgentes["{$reg->Info->Agent}"] = $cont;
+            }else{
+                $listaAgentes["{$reg->Info->Agent}"] = 1;
+            }
+        }
+
+        var_dump($listaAgentes); -->
