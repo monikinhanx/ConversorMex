@@ -14,6 +14,10 @@ class HomeController extends Controller
         return view('loading');
     }
 
+    public function viewErro(){
+        return view('erro');
+    }
+
     public function viewPath(){
         return view('path');
     }
@@ -44,13 +48,21 @@ class HomeController extends Controller
 
     public function viewMetadados(Request $request){
         set_time_limit(100000);
+        $path = "upload/";
 
-        $path = $request->path."/";
+        $arquivos = isset($_FILES['path']) ? $_FILES['path'] : FALSE;
+            
+        for ($controle = 0; $controle < count($arquivos['name']); $controle++){ 
+            $destino = $path."/".$arquivos['name'][$controle];
+            move_uploaded_file($arquivos['tmp_name'][$controle], $destino);
+        }
+        
         $diretorio = dir($path);
         $resultado = [];
+        $erro = [];
         
         while($arquivo = $diretorio -> read()){
-            if(strlen($arquivo) > 3){
+            if(strlen($arquivo) > 3 && $arquivo != "upload.txt"){
                 // echo "<a href='".$path.$arquivo."'>".$arquivo."</a><br />";
                 $delimitador = ',';
                 $cerca = '"';
@@ -58,18 +70,18 @@ class HomeController extends Controller
                 if ($f) {
                     $cabecalho = fgetcsv($f, 0, $delimitador, $cerca);
                     $string = "";
-        
+                    
                     while (!feof($f)){
                         $linha = fgetcsv($f, 0, $delimitador, $cerca);
 
                         if (!$linha) {
                             continue;
                         }
-
-                        $registro = array_combine($cabecalho, $linha);
-                        $data = $this->before("T", $registro['PostDateTime'])." ".$this->between("T", ".", $registro['PostDateTime']);
-                        if(empty($string)){
-                            $string = "{
+                        if(count($cabecalho) == count($linha)){
+                            $registro = array_combine($cabecalho, $linha);
+                            $data = $this->before("T", $registro['PostDateTime'])." ".$this->between("T", ".", $registro['PostDateTime']);
+                            if(empty($string)){
+                                $string = "{
     \"Metadata\": [
         {
             \"Key\": \"ClientCaptureDate\",
@@ -136,6 +148,14 @@ class HomeController extends Controller
             \"Value\": \"{$registro['actor_affiliation']}\"
         },
         {
+            \"Key\": \"UDF_text_15\",
+            \"Value\": \"{$registro['local_start_date']}\"
+        },
+        {
+            \"Key\": \"UDF_text_16\",
+            \"Value\": \"{$registro['local_todo_date']}\"
+        },
+        {
             \"Key\": \"UDF_Int_01\",
             \"Value\": \"{$registro['net_time_spent']}\"
         }
@@ -155,18 +175,28 @@ class HomeController extends Controller
                 \"TextInformation\": \"{$registro['TextInformation']}\"
             },";
                         $string .= $chat;
+                    }else{
+                        array_push($erro,$arquivo);
                     }
+                }
                     $endData = "
         ]
     }";
+                if(!empty($string)){
                     $string = $this->before_last(",", $string);
                     $string .= $endData;
                     array_push($resultado,$string);
                 }
+                    fclose($f);
+                }
+                unlink($path.$arquivo);
             }
         }
-        $qtd = count($resultado);
-        return view('metadados', ["resultado"=>$resultado, "qtd"=>$qtd]);
+        $diretorio -> close();
+        // dd($resultado);
+        $qtdRes = count($resultado);
+        $qtdErro = count($erro);
+        return view('metadados', ["resultado"=>$resultado, "qtdRes"=>$qtdRes, "qtdErro"=>$qtdErro, "erro"=>$erro]);
     }
 
     public function viewApi(Request $request){
