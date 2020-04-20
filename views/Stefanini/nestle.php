@@ -39,6 +39,9 @@
                 
                 <form action="/?audio" enctype="multipart/form-data" method="POST">
                     <div class="form-group">
+                        <input type="hidden" name="MAX_FILE_SIZE" value="3000000" />
+                    </div>
+                    <div class="form-group">
                         <label for="path" class="sub mb-3">Selecione o arquivo XML com os metadados:</label>
                         <input class="form-control mb-3" type="file" name="path" id="path" required>
                     </div>

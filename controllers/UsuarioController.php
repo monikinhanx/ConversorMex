@@ -88,18 +88,18 @@
             $sobrenome = $_POST['sobrenome'];
             $operação = $_POST['operacao'];
             $email = $_POST['email'];
-            $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
+            // $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
 
             $db = new Usuario(); //instancia usuario
 
-            $cadastro = $db->cadastrarUsuario($nome,$sobrenome,$operação,$email,$senha); //cadastra usuario no BD
+            $cadastro = $db->cadastrarUsuario($nome,$sobrenome,$operação,$email); //cadastra usuario no BD
 
             if($cadastro){
                 $_SESSION['cadastrado'] = $db->recuperaUsuario($email); //Coloca dados do usuario na superglobal
                 $_SESSION['invalido'] = "Usuário Cadastrado com Sucesso!";
                 include "views/cadastrado.php";
             }else{
-                $_SESSION['invalido'] = "não foi possivel cadastrar o usuario! Verifique os dados e tente novamente."; //Mensagem de erro de cadastro
+                $_SESSION['invalido'] = "Não foi possivel cadastrar o usuario! Verifique os dados e tente novamente."; //Mensagem de erro de cadastro
                 header('Location:/?cadastro');
             }
         }
@@ -110,6 +110,7 @@
             $senha = $_POST['senha'];
             if($this->validaUsuario($email,$senha)){
                 $db = new Usuario(); //instancia usuario
+                $db->ultimoLogin($email);
                 $_SESSION['usuario'] = $db->recuperaUsuario($email); //Coloca dados do usuario na superglobal
                 $_SESSION['invalido'] = "";
                 header('Location:/?depoislogar'); //direciona pra pagina de login
@@ -144,6 +145,7 @@
         }
 
         private function deslogarUsuario(){
+            session_gc();
             session_destroy(); //destroi sessão
             header('Location:/?'); //direciona pra pagina de login
         }

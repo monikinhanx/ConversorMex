@@ -1,8 +1,4 @@
 <?php 
-    // if(isset($_SESSION['user'])){
-    //     header('Location:/?FakeInstagram/posts');
-    // }
-
     $bg = "background: url('views/img/Campaign-Analytics-Banking.jfif') no-repeat center center; background-size: cover;";
 ?>
 
@@ -26,8 +22,8 @@
     <main>
         <section class="box">
         <a href="/?" class=""><i class="fas fa-home"></i></a>
-            <img src="views/img/Logo_Mex.png" class="logo" alt="Logo Mex Consulting">
-            <h1 class="title">Cadastro de Usuário</h1>
+            <!-- <img src="views/img/Logo_Mex.png" class="logo" alt="Logo Mex Consulting"> -->
+            <h1 class="title mt-3">Cadastro de Usuário</h1>
             <p class="erro"><?php if(isset($_SESSION['invalido'])) echo $_SESSION['invalido'] ?></p>
             <form action="/?cadastrar" method="post" enctype="multipart/form-data">
                 <div class="form-group">
@@ -51,11 +47,7 @@
                     <label for="email">E-mail:</label>
                     <input type="email" class="form-control" name="email" id="email" placeholder="Insira seu e-mail" required>
                 </div>
-                <div class="form-group">
-                    <label for="senha">Senha:</label>
-                    <input type="password" class="form-control" id="senha" name="senha" placeholder="Insira sua senha" required>
-                </div>
-                <button type="submit" class="btn btn-mex mb-5">Cadastrar</button>
+                <button type="submit" class="btn btn-mex">Cadastrar</button>
             </form>
         </section>
     </main>

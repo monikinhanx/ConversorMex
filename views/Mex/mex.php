@@ -37,9 +37,9 @@
             
             <div class="container">
                 <h1 class="mb-5 title">O que deseja fazer?</h1>            
-                <a href="/?cadastro" class="btn btn-mex mb-5">Cadastro Usuário</a>
-                <a href="/?stefanini" class="btn btn-mex mb-5">Stefanini</a>
-                <a href="/?nubank" class="btn btn-mex mb-5">Nubank</a>
+                <a href="/?usuario" class="btn btn-mex mb-5">Usuários</a>
+                <a href="/?clientes" class="btn btn-mex mb-5">Clientes</a>
+                <a href="/?relatorios" class="btn btn-mex mb-5">Relatórios</a>
             </div>
         </section>
     </main>

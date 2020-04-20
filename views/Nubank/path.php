@@ -38,6 +38,9 @@
                 <h1 class="mb-5 title">Caminho dos Arquivos</h1>            
                 <form action="/?metadados" enctype="multipart/form-data" method="POST">
                     <div class="form-group">
+                        <input type="hidden" name="MAX_FILE_SIZE" value="3000000" />
+                    </div>
+                    <div class="form-group">
                         <label for="path" class="sub mb-3">Informe o caminho da pasta onde estão as Interações de Chat:</label>
                         <input class="form-control mb-3" type="file" name="path[]" multiple="multiple" id="path" placeholder="Ex.: C:\Users\user\Desktop" required>
                         <!-- <input class="form-control mb-3" type="text" name="path" id="path" placeholder="Ex.: C:\Users\user\Desktop" required> -->

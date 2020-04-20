@@ -39,6 +39,9 @@
                 <p class="sub mb-3">Identificamos <?=$_SESSION['listaAgentes']["total"] ?> interação(ões) de <?=count($_SESSION['listaAgentes']["agentes"]) ?> agentes e geramos os XML.</p>
                 <form action="/?amostra" enctype="multipart/form-data" method="POST">
                     <div class="form-group">
+                        <input type="hidden" name="MAX_FILE_SIZE" value="3000000" />
+                    </div>
+                    <div class="form-group">
                         <label for="path" class="sub mb-3">Selecione os arquivos de audio correnpondentes a essa amostra:</label>
                         <input class="form-control mb-3" type="file" name="path[]" multiple="multiple" id="path" required>
                     </div>

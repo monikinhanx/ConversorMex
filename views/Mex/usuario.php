@@ -1,7 +1,6 @@
 <?php
-    $bg = "background: url('views/img/Campaign-Analytics-Banking.jfif') no-repeat center center; background-size: cover;";
+    $bg = "background: url('views/img/BG.jpg') no-repeat center center; background-size: cover;";
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -14,29 +13,34 @@
     <title>Mex Consulting</title>
     <link rel="shortcut icon" href="views/img/favicon.ico" type="image/x-icon">
     <link rel="icon" href="views/img/favicon.ico" type="image/x-icon">
+    <!-- Bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <!-- CSS Personalizado -->
     <link rel="stylesheet" href="views/css/style.css">
 </head>
 <body style="<?= $bg ?>">
-    <main>
-        <section class="box">
-            <a href="/?" class=""><i class="fas fa-home"></i></a>
-            <img src="views/img/Logo_Mex.png" class="logo" alt="Logo Mex Consulting">
-            <h1 class="title">Login de Usuário</h1>
-            <p class="erro"><?php if(isset($_SESSION['invalido'])) echo $_SESSION['invalido'] ?></p>
-            <form action="/?logar" method="post" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label for="email">E-mail:</label>
-                    <input type="email" class="form-control" name="email" id="email" placeholder="Insira seu e-mail" required>
-                </div>
-                <div class="form-group">
-                    <label for="senha">Senha:</label>
-                    <input type="password" class="form-control" id="senha" name="senha" placeholder="Insira sua senha" minlength="8" required>
-                </div>
-                <button type="submit" class="btn btn-mex">Login</button>
-                <p class="sub">Esqueceu a senha ou é novo? <a href="/?altera">Clique aqui</a>.</p>
-            </form>
+    <main class="d-flex justify-content-end">
+        <div class="dropdown">
+            <a class="btn btn-menu dropdown-toggle text-white" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Olá, <?=$_SESSION['usuario']->nome?>!
+            </a>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="/?">Home Mex</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="/?logout">Logout</a>
+            </div>
+        </div>
+        <section class="box-interno my-auto">
+            <img src="views/img/Logo_Mex.png" width="200" height="150" class="d-inline-block" alt="">
+            
+            <div class="container">
+                <h1 class="mb-5 title">O que deseja fazer?</h1>            
+                <a href="/?cadastro" class="btn btn-mex mb-5">Cadastrar</a>
+                <a href="/?excluir" class="btn btn-mex mb-5">Excluir</a>
+                <a href="/?listar" class="btn btn-mex mb-5">Listar</a>
+            </div>
         </section>
     </main>
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
