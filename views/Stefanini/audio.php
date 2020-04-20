@@ -45,8 +45,15 @@
                         <label for="path" class="sub mb-3">Selecione os arquivos de audio correnpondentes a essa amostra:</label>
                         <input class="form-control mb-3" type="file" name="path[]" multiple="multiple" id="path" required>
                     </div>
-                    <div class="form-group">
-                        <textarea class="form-control" name="listaAgentes" id="listaAgentes" hidden><?=json_encode($_SESSION["listaAgentes"]) ?></textarea>
+                    <div class="form-row">
+                        <div class="col">
+                            <label for="tma" class="sub mb-3">TMA em minutos:</label>
+                            <input class="form-control mb-3" type="number" name="tma" id="tma" required>
+                        </div>
+                        <div class="col">
+                            <label for="qtdAudio" class="sub mb-3">Ligações por Agente:</label>
+                            <input class="form-control mb-3" type="number" name="qtdAudio" id="qtdAudio" required>
+                        </div>
                     </div>
                     <a href="/?stefanini" class="btn btn-mex mb-5">Voltar</a>
                     <button type="submit" class="btn btn-mex mb-5">Próximo</button>

@@ -25,8 +25,8 @@
                 case "amostra":
                     $this->viewAmostra(); //Mostra pagina inicial
                 break;
-                case "sftp":
-                    $this->viewSftp(); //Mostra pagina inicial
+                case "cm":
+                    $this->viewCm(); //Mostra pagina inicial
                 break;
             }
         }
@@ -84,11 +84,12 @@
                 }else{
                     $listaAgentes["agentes"]["{$reg->Info->Agent}"] = ["audios"=>["1"=>"{$reg->Info->Filename}"]];
                 }
-                $listaAgentes["agentes"]["{$reg->Info->Agent}"]["cont"] = 0;
+                $listaAgentes["agentes"]["{$reg->Info->Agent}"]["cont"] = [];
 
+                $data_hora = substr($reg->Info->RecordingDateTime, 0, strpos($reg->Info->RecordingDateTime, ".000"));
                 $nome_arquivo = $path."/xml/".substr($reg->Info->Filename, 0, -4).".xml";
                 array_push($arquivosXml, substr($reg->Info->Filename, 0, -4).".xml");
-            $data_hora = substr($reg->Info->RecordingDateTime, 0, strpos($reg->Info->RecordingDateTime, ".000"));
+            
             $string = "<?xml version='1.0' encoding='UTF-8'?>
 <recordings>
     <recording>
@@ -113,9 +114,11 @@
 
             return $listaAgentes;
         }
+
         private function xmlBoticario(){
             set_time_limit(0);
         }
+
         private function viewAudio(){
             if($_SESSION['operacao'] == "nestle"){
                 $listaAgentes = $this->xmlNestle();
@@ -125,11 +128,16 @@
             $_SESSION['listaAgentes'] = $listaAgentes;
             include "views/Stefanini/audio.php";
         }
+
         private function viewAmostra(){
             set_time_limit(0);
+            $maxMin = 5;
+            top:
             $path = $_SERVER['DOCUMENT_ROOT']."/MexConsulting/views/uploadStefanini/";
             $arquivos = isset($_FILES['path']) ? $_FILES['path'] : false;
             $listaAgentes = $_SESSION['listaAgentes'];
+            $tma = $_POST['tma'] * 60;
+            $qtdAudio = $_POST['qtdAudio'];
             $selecionado = [];
             $naoSelecionado = [];
             $naoEncontrado = [];
@@ -139,8 +147,8 @@
             $usado = false;
 
             for ($controle = 0; $controle < count($arquivos['name']); $controle++){
-                array_push($totalArquivos, $arquivos['name'][$controle]);
                 $duracao = $this->wavDur($arquivos['tmp_name'][$controle]);
+                array_push($totalArquivos, $arquivos['name'][$controle]);
 
                 // Testando se os arquivos não são de audio
                 if(!$usado){
@@ -154,7 +162,7 @@
 
                 //Testando se está fora do padrão
                 if(!$usado){
-                    if($duracao['hora'] >= 1 || ($duracao['hora'] == 0 && $duracao['minuto'] == 0 && $duracao['segundo'] < 30) || $arquivos['size'][$controle] == 0){
+                    if(($duracao['hora'] >= 0 && $duracao['minuto'] > $maxMin && $duracao['segundo'] >= 0) || ($duracao['hora'] == 0 && $duracao['minuto'] == 0 && $duracao['segundo'] < 30) || $arquivos['size'][$controle] == 0){
                         $destino = $path."foraPadrao/".$arquivos['name'][$controle];
                         array_push($foraPadrao,$arquivos['name'][$controle]);
                         move_uploaded_file($arquivos['tmp_name'][$controle], $destino);
@@ -166,7 +174,9 @@
                 if(!$usado){
                     $achou = false;
                     foreach($listaAgentes["agentes"] as $agente){
-                        if(in_array($arquivos['name'][$controle], $agente["audios"])){
+                        if(!in_array($arquivos['name'][$controle], $agente["audios"])){
+                            continue;
+                        }else{
                             $achou = true;
                         }
                     }
@@ -184,14 +194,13 @@
                     while ($agente = current($listaAgentes["agentes"])) {
                         $chave = key($listaAgentes["agentes"]);
                         $cont = $listaAgentes["agentes"][$chave]["cont"];
-                        if($cont < 2){
+                        if($cont < $qtdAudio){
                             foreach($listaAgentes["agentes"][$chave]["audios"] as $audio){
                                 if($arquivos['name'][$controle] == $audio){
                                     $destino = $path."selecionado/".$arquivos['name'][$controle];
-                                    array_push($selecionado,$arquivos['name'][$controle]);
+                                    array_push($selecionado,[$arquivos['name'][$controle],$arquivos['size'][$controle]]);
+                                    array_push($listaAgentes["agentes"][$chave]["cont"],[$arquivos['name'][$controle], $duracao]);
                                     move_uploaded_file($arquivos['tmp_name'][$controle], $destino);
-                                    $cont++;
-                                    $listaAgentes["agentes"][$chave]["cont"] = $cont;
                                     $usado = true;
                                 }
                             }
@@ -213,6 +222,36 @@
                 //Voltando USADO pro status inicial
                 $usado = false;
             }
+
+            $totCont = 0;
+            $hora = 0;
+            $minuto = 0;
+            $segundo = 0;
+
+            reset($listaAgentes["agentes"]);
+            while ($agente = current($listaAgentes["agentes"])) {
+                $chaveAgente = key($listaAgentes["agentes"]);
+                $totCont += count($listaAgentes["agentes"][$chaveAgente]["cont"]);
+                foreach($listaAgentes["agentes"][$chaveAgente]["cont"] as $sel){
+                    foreach($sel as $s){
+                        if(is_array($s)){
+                            $hora += $s["hora"];
+                            $minuto += $s["minuto"];
+                            $segundo += $s["segundo"];
+                        }
+                    }
+                }
+                next($listaAgentes["agentes"]);
+            }
+
+            $minuto += ($hora * 60);
+            $segundo += ($minuto *60);
+            $tma = $segundo / $totCont;
+
+            $mintma = intval($tma/60);
+            $segtma = $tma % 60;
+
+            $tmaFormatado = $mintma."m".$segtma."s";
             
             $_SESSION["selecionado"] = $selecionado;
             $_SESSION["naoSelecionado"] = $naoSelecionado;
@@ -220,88 +259,133 @@
             $_SESSION["foraPadrao"] = $foraPadrao;
             $_SESSION["naoAudio"] = $naoAudio;
             $_SESSION["totalArquivos"] = $totalArquivos;
+            $_SESSION["tmaFormatado"] = $tmaFormatado;
+            $_SESSION['listaAgentes'] = $listaAgentes;
 
             include "views/Stefanini/amostra.php";
         }
 
-        private function viewSftp(){
+        private function viewCm(){
             set_time_limit(0);
-            $xmlEnviado = [];
-            $audioEnviado = [];
-            $xmlErro = [];
-            $audioErro = [];
-            $pathAudio = $_SERVER['DOCUMENT_ROOT']."/MexConsulting/views/uploadStefanini/selecionado/";
-            $pathXml = $_SERVER['DOCUMENT_ROOT']."/MexConsulting/views/uploadStefanini/xml/";
-            $pathGeral = $_SERVER['DOCUMENT_ROOT']."/MexConsulting/views/uploadStefanini/";
+            $erro = [];
+            $resultado = [];
+
+            $path = $_SERVER['DOCUMENT_ROOT']."/MexConsulting/views/uploadStefanini/";
             
-            foreach($_SESSION["selecionado"] as $audio){
-                if($this->sftpConnection($audio,$pathAudio)){
-                    array_push($audioEnviado,$audio);
+            foreach($_SESSION["selecionado"] as $selec){
+                $xml = simplexml_load_file($path."xml/".substr($selec[0], 0, -4).".xml");
+
+                $string = "{
+    \"Metadata\": [
+        {
+            \"Key\": \"ClientCaptureDate\",
+            \"Value\": \"$reg->Data_Hora_Inicio\"
+        },
+        {
+            \"Key\": \"ClientID\",
+            \"Value\": \"$reg->Call_Id\"
+        },
+        {
+            \"Key\": \"AudioFileLocation\",
+            \"Value\": \"$reg->Nome_Do_Arquivo\"
+        },
+        {
+            \"Key\": \"Agent\",
+            \"Value\": \"$reg->Nome_Operador\"
+        },
+        {
+            \"Key\": \"ANI\",
+            \"Value\": \"$reg->Telefone\"
+        },
+        {
+            \"Key\": \"UDF_text_01\",
+            \"Value\": \"$reg->Projeto\"
+        },
+        {
+            \"Key\": \"UDF_text_02\",
+            \"Value\": \"$reg->Id_Operador\"
+        },
+        {
+            \"Key\": \"UDF_text_03\",
+            \"Value\": \"$reg->Supervisor\"
+        },
+        {
+            \"Key\": \"UDF_text_04\",
+            \"Value\": \"$reg->Gestor\"
+        },
+        {
+            \"Key\": \"UDF_text_05\",
+            \"Value\": \"$reg->Campanha\"
+        },
+        {
+            \"Key\": \"UDF_text_06\",
+            \"Value\": \"$reg->Celula\"
+        },
+        {
+            \"Key\": \"UDF_text_07\",
+            \"Value\": \"$reg->Site\"
+        }
+    ],
+    \"TotalMediaLength\": $selec[1],
+    \"MediaType\": \"audio/wav\",
+    \"ClientCaptureDate\": \"$data\",
+    \"VoicePrintIdentifier\": \"$reg->Nome_Operador\",
+    \"SourceId\": \"Asterisk\"
+}";
+
+                $context = stream_context_create(array(
+                    'http' => array(
+                        'method' => 'POST',                    
+                        'header' => "Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Ik1FWC1TdGVmYW5pbmlfSW5nZXN0aW9uVXNlcl9hNzMwMWVkMTQ0YjI0NDFhOTJlN2ZiOGE2NGFiNGZkNEBjYWxsbWluZXIuY29tIiwiZW1haWwiOiJNRVgtU3RlZmFuaW5pX0luZ2VzdGlvblVzZXJfYTczMDFlZDE0NGIyNDQxYTkyZTdmYjhhNjRhYjRmZDRAY2FsbG1pbmVyLmNvbSIsImFjdG9ydCI6Ik1FWC1TdGVmYW5pbmkiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9sb2NhbGl0eSI6ImVuLVVTIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9leHBpcmF0aW9uIjoiMDMvMzEvMjAyMiAxMzoyODoyOSIsIm5iZiI6MTU4NTY2MTMwOSwiZXhwIjoxNjQ4NzMzMzA5LCJpYXQiOjE1ODU2NjEzMDksImlzcyI6Imh0dHA6Ly9hcGkuY2FsbG1pbmVyLm5ldCIsImF1ZCI6Imh0dHA6Ly9hcGkuY2FsbG1pbmVyLm5ldCJ9.2_TO34z4vgXbj4IRVNkgRY4ymbRohEvGk7MOEqaw7_Y\r\n"."Content-type: application/json; charset=utf-8\r\n",
+                        'content' => $string                            
+                    )
+                ));
+
+                $contents = file_get_contents("https://ingestion.callminer.net/api/session/metadatamedia", null, $context);            
+                $resposta = json_decode($contents);
+
+                if(is_null($resposta)){
+                    array_push($erro, [$selec[0]=>$resposta]);
                 }else{
-                    array_push($audioErro,$audio);
-                }
-                unlink($pathAudio.$audio);
-            }
-
-            foreach($_SESSION["selecionado"] as $audio){
-                foreach($_SESSION["arquivosXml"] as $xml){
-                    if((substr($audio, 0, -4).".xml") == $xml){
-                        if($this->sftpConnection($xml,$pathXml)){
-                            array_push($xmlEnviado,$audio);
-                        }else{
-                            array_push($xmlErro,$audio);
-                        }
-                        $key = array_search($xml,$_SESSION["arquivosXml"]);
-                        unset($_SESSION["arquivosXml"][$key]);
-                        unlink($pathXml.$xml);
-                    }
+                    $context = stream_context_create(array(
+                        'http' => array(
+                            'method' => 'POST',                    
+                            'header' => "Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Ik1FWC1TdGVmYW5pbmlfSW5nZXN0aW9uVXNlcl9hNzMwMWVkMTQ0YjI0NDFhOTJlN2ZiOGE2NGFiNGZkNEBjYWxsbWluZXIuY29tIiwiZW1haWwiOiJNRVgtU3RlZmFuaW5pX0luZ2VzdGlvblVzZXJfYTczMDFlZDE0NGIyNDQxYTkyZTdmYjhhNjRhYjRmZDRAY2FsbG1pbmVyLmNvbSIsImFjdG9ydCI6Ik1FWC1TdGVmYW5pbmkiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9sb2NhbGl0eSI6ImVuLVVTIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9leHBpcmF0aW9uIjoiMDMvMzEvMjAyMiAxMzoyODoyOSIsIm5iZiI6MTU4NTY2MTMwOSwiZXhwIjoxNjQ4NzMzMzA5LCJpYXQiOjE1ODU2NjEzMDksImlzcyI6Imh0dHA6Ly9hcGkuY2FsbG1pbmVyLm5ldCIsImF1ZCI6Imh0dHA6Ly9hcGkuY2FsbG1pbmVyLm5ldCJ9.2_TO34z4vgXbj4IRVNkgRY4ymbRohEvGk7MOEqaw7_Y\r\n"."Content-type: audio/wav\r\n"."Content-Length: {$selec[1]}\r\n",
+                            'content' => file_get_contents($path."selecionado/".$selec[0]) 
+                        )
+                    ));
+        
+                    $contents = file_get_contents("https://ingestion.callminer.net/api/media/{$resposta->SessionId}", null, $context);$resposta = json_decode($contents);
+                    
+                    array_push($resultado, [$selec[0]=>$resposta]);
                 }
             }
 
+            foreach($_SESSION["selecionado"] as $selecionado){
+                unlink($path."/selecionado/".$selecionado);
+            }
             foreach($_SESSION["naoSelecionado"] as $naoSelecionado){
-                unlink($pathGeral."/naoSelecionado/".$naoSelecionado);
+                unlink($path."/naoSelecionado/".$naoSelecionado);
             }
             foreach($_SESSION["naoEncontrado"] as $naoEncontrado){
-                unlink($pathGeral."/naoEncontrado/".$naoEncontrado);
+                unlink($path."/naoEncontrado/".$naoEncontrado);
             }
             foreach($_SESSION["foraPadrao"] as $foraPadrao){
-                unlink($pathGeral."/foraPadrao/".$foraPadrao);
+                unlink($path."/foraPadrao/".$foraPadrao);
             }
             foreach($_SESSION["naoAudio"] as $naoAudio){
-                unlink($pathGeral."/naoAudio/".$naoAudio);
+                unlink($path."/naoAudio/".$naoAudio);
             }
             foreach($_SESSION["arquivosXml"] as $xml){
-                unlink($pathXml.$xml);
+                unlink($path."/xml/".$xml);
             }
             
-            $_SESSION['xmlEnviado'] = $xmlEnviado;
-            $_SESSION['audioEnviado'] = $audioEnviado;
-            $_SESSION['xmlErro'] = $xmlErro;
-            $_SESSION['audioErro'] = $audioErro;
-
-            include "views/Stefanini/sftp.php";
+            $_SESSION['apiErro'] = $erro;
+            $_SESSION['apiResultado'] = $resultado;
+            
+            include "views/Stefanini/cm.php";
         }
-
-        private function sftpConnection($arquivo,$caminho){
-            set_time_limit(0);
-            $servidor = "uploads.callminer.net";
-            $porta = 22;
-            $caminho_absoluto = '/Asterisk/';
-
-            $con_id = ssh2_connect($servidor,$porta) or die( 'Não conectou em: '.$servidor );
-            $logou = ssh2_auth_password($con_id, 'Mex_Stefanini_FTP', 'nU4vK@@b7ePz^mhs');
-            $sftp = ssh2_sftp($con_id);
-            $stream = fopen('ssh2.sftp://'.$sftp.$caminho_absoluto.$arquivo, 'w');
-            $data_to_send = file_get_contents($caminho.$arquivo);
-            if(fwrite($stream, $data_to_send) === false){
-                fclose($stream);
-                return false;
-            }else{
-                fclose($stream);
-                return true;
-            }            
-        }
-
+        
         private function wavDur($file) {
             $fp = fopen($file, 'r');
             if (fread($fp,4) == "RIFF") {

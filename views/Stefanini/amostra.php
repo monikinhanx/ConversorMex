@@ -45,6 +45,10 @@
                             <td><?=count($_SESSION["totalArquivos"]) ?></td>
                         </tr>
                         <tr>
+                            <th>TMA da Amostra:</th>
+                            <td><?=count($_SESSION["tmaFormatado"]) ?></td>
+                        </tr>
+                        <tr>
                             <th>Selecionados:</th>
                             <td><?=count($_SESSION["selecionado"]) ?></td>
                         </tr>
@@ -66,7 +70,7 @@
                         </tr>
                     </tbody>
                 </table>
-                <a href="/?sftp" class="btn btn-mex mb-5">Subir para o SFTP</a>
+                <a href="/?cm" class="btn btn-mex mb-5">Subir para a CM</a>
             </div>
         </section>
     </main>

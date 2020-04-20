@@ -35,9 +35,11 @@
             <img src="views/img/Logo_Mex.png" width="200" height="150" class="d-inline-block" alt="">
             
             <div class="container">
-                <h1 class="mb-5 title">Envio para SFTP</h1>            
-                <p class="sub mb-3">Foram enviados <?=count($_SESSION['xmlEnviado'])?> arquivos XML com sucesso e <?=count($_SESSION['xmlErro'])?> com erro.</p>
-                <p class="sub mb-3">Foram enviados <?=count($_SESSION['audioEnviado'])?> arquivos de Áudio com sucesso e <?=count($_SESSION['audioErro'])?> com erro.</p>
+                <h1 class="mb-5 title">Envio para CallMiner</h1>            
+                <p class="sub mb-3">Foram enviados <?=count($_SESSION['apiResultado'])?> interações com sucesso e <?=count($_SESSION['apiErro'])?> com erro.</p>
+                
+                <textarea name="apiResultado" id="apiResultado" hidden><?=json_encode($_SESSION["apiResultado"]) ?></textarea>
+                <textarea name="apiErro" id="apiErro" hidden><?=json_encode($_SESSION["apiErro"]) ?></textarea>
                 
                 <a href="/?stefanini" class="btn btn-mex mb-5">Voltar</a>
             </div>

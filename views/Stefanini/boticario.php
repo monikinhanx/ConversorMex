@@ -45,9 +45,6 @@
                         <label for="path" class="sub mb-3">Selecione os arquivos XML com os metadados:</label>
                         <input class="form-control mb-3" type="file" name="path[]" multiple="multiple" id="path" required>
                     </div>
-                    <div class="form-group">
-                        <input class="form-control mb-3" type="text" name="operacao" id="operacao" value="boticario" hidden>
-                    </div>
                     <a href="/?stefanini" class="btn btn-mex mb-5">Voltar</a>
                     <button type="submit" class="btn btn-mex mb-5">Próximo</button>
                 </form>

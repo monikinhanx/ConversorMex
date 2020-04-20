@@ -31,6 +31,8 @@
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <a class="dropdown-item" href="/?">Home Mex</a>
                     <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/?login">Página Inicial</a>
+                    <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="/?logout">Logout</a>
                 </div>
             </div>

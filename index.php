@@ -102,7 +102,7 @@
             $controller = new StefaniniController();
             $controller->acao($rotas);
         break;
-        case "sftp":
+        case "cm":
             include "controllers/StefaniniController.php";
             $controller = new StefaniniController();
             $controller->acao($rotas);

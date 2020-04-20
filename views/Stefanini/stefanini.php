@@ -35,7 +35,7 @@
             <div class="container">
                 <h1 class="mb-5 title">Seletor de Amostra</h1>            
                 <p class="sub mb-3">Sistema desenvolvido para selecionar amostra de ligações para upload na CallMiner de acordo com regras de negócio.</p>
-                <a href="/?operacao" class="btn btn-mex mb-5">Selecionar arquivos</a>
+                <a href="/?operacao" class="btn btn-mex mb-5">Selecionar Amostra</a>
             </div>
         </section>
     </main>
