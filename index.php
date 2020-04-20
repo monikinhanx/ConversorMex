@@ -112,12 +112,17 @@
             $controller = new MexController();
             $controller->acao($rotas);
         break;
+        case "usuarios":
+            include "controllers/MexController.php";
+            $controller = new MexController();
+            $controller->acao($rotas);
+        break;
         case "clientes":
             include "controllers/MexController.php";
             $controller = new MexController();
             $controller->acao($rotas);
         break;
-        case "usuario":
+        case "relatorios":
             include "controllers/MexController.php";
             $controller = new MexController();
             $controller->acao($rotas);

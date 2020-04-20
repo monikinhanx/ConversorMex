@@ -29,6 +29,8 @@
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <a class="dropdown-item" href="/?">Home Mex</a>
                 <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="/?login">Página Inicial</a>
+                <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="/?logout">Logout</a>
             </div>
         </div>
@@ -36,10 +38,9 @@
             <img src="views/img/Logo_Mex.png" width="200" height="150" class="d-inline-block" alt="">
             
             <div class="container">
-                <h1 class="mb-5 title">O que deseja fazer?</h1>            
-                <a href="/?usuarios" class="btn btn-mex mb-5">Usuários</a>
-                <a href="/?clientes" class="btn btn-mex mb-5">Clientes</a>
-                <a href="/?relatorios" class="btn btn-mex mb-5">Relatórios</a>
+                <h1 class="mb-5 title">Escolha o Cliente:</h1>            
+                <a href="/?stefanini" class="btn btn-mex mb-5">Stefanini</a>
+                <a href="/?nubank" class="btn btn-mex mb-5">Nubank</a>
             </div>
         </section>
     </main>
