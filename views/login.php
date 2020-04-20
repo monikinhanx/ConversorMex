@@ -35,7 +35,7 @@
                     <input type="password" class="form-control" id="senha" name="senha" placeholder="Insira sua senha" minlength="8" required>
                 </div>
                 <button type="submit" class="btn btn-mex">Login</button>
-                <p class="sub">Esqueceu a senha ou é novo? <a href="/?altera">Clique aqui</a>.</p>
+                <p class="sub">Esqueceu a senha ou é novo? <a href="/?alterasenha">Clique aqui</a>.</p>
             </form>
         </section>
     </main>

@@ -7,7 +7,7 @@
             $controller = new HomeController();
             $controller->acao($rotas);
         break;
-        case "cadastro":
+        case "cadastrousuario":
             include "controllers/UsuarioController.php";
             $controller = new UsuarioController();
             $controller->acao($rotas);
@@ -32,7 +32,7 @@
             $controller = new UsuarioController();
             $controller->acao($rotas);
         break;
-        case "altera":
+        case "alterasenha":
             include "controllers/UsuarioController.php";
             $controller = new UsuarioController();
             $controller->acao($rotas);

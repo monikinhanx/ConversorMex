@@ -1,5 +1,5 @@
 <?php
-    $bg = "background: url('views/img/BG.jpg') no-repeat center center; background-size: cover;";
+    $bg = "background: url('views/img/Campaign-Analytics-Banking.jfif') no-repeat center center; background-size: cover;";
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -21,26 +21,44 @@
     <link rel="stylesheet" href="views/css/style.css">
 </head>
 <body style="<?= $bg ?>">
-    <main class="d-flex justify-content-end">
-        <div class="dropdown">
-            <a class="btn btn-menu dropdown-toggle text-white" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Olá, <?=$_SESSION['usuario']->nome?>!
-            </a>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="/?">Home Mex</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/?logout">Logout</a>
+    <main class="d-flex justify-content-center">
+        <section class="d-flex justify-content-between">
+            <a class="btn btn-mex" href="/?">+ Cadastrar</a>
+            <div class="dropdown">
+                <a class="btn btn-menu dropdown-toggle text-white" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Olá, <?=$_SESSION['usuario']->nome?>!
+                </a>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="/?">Home Mex</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/?logout">Logout</a>
+                </div>
             </div>
-        </div>
+        </section>
         <section class="box-interno my-auto">
-            <img src="views/img/Logo_Mex.png" width="200" height="150" class="d-inline-block" alt="">
-            
-            <div class="container">
-                <h1 class="mb-5 title">O que deseja fazer?</h1>            
-                <a href="/?cadastro" class="btn btn-mex mb-5">Cadastrar</a>
-                <a href="/?excluir" class="btn btn-mex mb-5">Excluir</a>
-                <a href="/?listar" class="btn btn-mex mb-5">Listar</a>
-            </div>
+            <table class="table table-striped">
+                <thead class="table-mex">
+                    <tr>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Operação</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">
+                        <div class="botoes">
+                            <a class="btn btn-mex" href="/?editarusuario">Home Mex</a>
+                            <a class="btn btn-mex" href="/?excluirusuario">Home Mex</a>
+                        </div>
+                    </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    <td>Mark</td>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td>@mdo</td>
+                    </tr>
+                </tbody>
+            </table>
         </section>
     </main>
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>

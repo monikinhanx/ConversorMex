@@ -170,6 +170,10 @@ form{
     color: red;
 }
 
+.table-mex{
+    background-color: #00a8a5;
+}
+
 @media only screen and (max-width: 992px) {
     .box,.box-interno{
         width: 90%;

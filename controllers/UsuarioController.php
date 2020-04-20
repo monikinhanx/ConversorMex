@@ -8,7 +8,7 @@
         // Direcionando para a pagina correta
         public function acao($rotas){
             switch($rotas){
-                case "cadastro":
+                case "cadastrousuario":
                     $this->cadastrarUsuario();
                 break;
                 case "cadastrar":
@@ -20,7 +20,7 @@
                 case "logar":
                     $this->logarUsuario();
                 break;
-                case "altera":
+                case "alterasenha":
                     $this->alteraSenha();
                 break;
                 case "novasenha":
@@ -35,7 +35,6 @@
             }
         }
 
-        // Metodo que direciona para pagina de cadastro novo usuario
         private function cadastrarUsuario(){
             include "views/cadastro.php";
         }
@@ -99,8 +98,8 @@
                 $_SESSION['invalido'] = "Usuário Cadastrado com Sucesso!";
                 include "views/cadastrado.php";
             }else{
-                $_SESSION['invalido'] = "Não foi possivel cadastrar o usuario! Verifique os dados e tente novamente."; //Mensagem de erro de cadastro
-                header('Location:/?cadastro');
+                $_SESSION['invalido'] = "Não foi possivel cadastrar o usuario! Verifique os dados e tente novamente.";
+                header('Location:/?cadastrousuario');
             }
         }
 
