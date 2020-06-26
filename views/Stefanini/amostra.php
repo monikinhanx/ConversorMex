@@ -46,7 +46,7 @@
                         </tr>
                         <tr>
                             <th>TMA da Amostra:</th>
-                            <td><?=count($_SESSION["tmaFormatado"]) ?></td>
+                            <td><?=$_SESSION["tmaFormatado"] ?></td>
                         </tr>
                         <tr>
                             <th>Selecionados:</th>

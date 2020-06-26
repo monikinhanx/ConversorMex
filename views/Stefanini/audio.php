@@ -32,17 +32,15 @@
             </div>
         </div>
         <section class="box-interno my-auto">
-            <img src="views/img/Logo_Mex.png" width="200" height="150" class="d-inline-block" alt="">
-            
             <div class="container">
-                <h1 class="mb-5 title">Operação Nestlé</h1>
-                <p class="sub mb-3">Identificamos <?=$_SESSION['listaAgentes']["total"] ?> interação(ões) de <?=count($_SESSION['listaAgentes']["agentes"]) ?> agentes e geramos os XML.</p>
+                <h1 class="mb-5 mt-3 title">Operação Nestlé</h1>
+                <p class="sub mb-3">Identificamos <?=$_SESSION['listaAgentes']["total"] ?> interação(ões) de <?=count($_SESSION['listaAgentes']["agentes"]) ?> agentes.</p>
                 <form action="/?amostra" enctype="multipart/form-data" method="POST">
                     <div class="form-group">
                         <input type="hidden" name="MAX_FILE_SIZE" value="3000000" />
                     </div>
                     <div class="form-group">
-                        <label for="path" class="sub mb-3">Selecione os arquivos de audio correnpondentes a essa amostra:</label>
+                        <label for="path" class="sub mb-3">Selecione os áudios da amostra:</label>
                         <input class="form-control mb-3" type="file" name="path[]" multiple="multiple" id="path" required>
                     </div>
                     <div class="form-row">
@@ -55,8 +53,8 @@
                             <input class="form-control mb-3" type="number" name="qtdAudio" id="qtdAudio" required>
                         </div>
                     </div>
-                    <a href="/?stefanini" class="btn btn-mex mb-5">Voltar</a>
-                    <button type="submit" class="btn btn-mex mb-5">Próximo</button>
+                    <a href="/?stefanini" class="btn btn-mex mb-3">Voltar</a>
+                    <button type="submit" class="btn btn-mex mb-3">Próximo</button>
                 </form>
             </div>
         </section>

@@ -64,12 +64,15 @@
 
         private function xmlNestle(){
             set_time_limit(0);
-            $path = $_SERVER['DOCUMENT_ROOT']."/MexConsulting/views/uploadStefanini/";
-            $arquivos = isset($_FILES['path']) ? $_FILES['path'] : false;
-            $destino = $path.$arquivos['name'];
-            move_uploaded_file($arquivos['tmp_name'], $destino);
 
-            $xml = simplexml_load_file($destino);
+            $arquivos = isset($_FILES['path']) ? $_FILES['path'] : false;
+            
+            if($arquivos['type'] != "text/xml"){
+                $_SESSION['invalido'] = "É necessário que o arquivo enviado seja do tipo XML!";
+                header('Location:/?nestle');
+            }
+
+            $xml = simplexml_load_file($arquivos['tmp_name']);
             $listaAgentes = ["total"=>0,"agentes"=>[]];
             $arquivosXml = [];
 
@@ -87,32 +90,14 @@
                 $listaAgentes["agentes"]["{$reg->Info->Agent}"]["cont"] = [];
 
                 $data_hora = substr($reg->Info->RecordingDateTime, 0, strpos($reg->Info->RecordingDateTime, ".000"));
-                $nome_arquivo = $path."/xml/".substr($reg->Info->Filename, 0, -4).".xml";
-                array_push($arquivosXml, substr($reg->Info->Filename, 0, -4).".xml");
-            
-            $string = "<?xml version='1.0' encoding='UTF-8'?>
-<recordings>
-    <recording>
-        <Projeto>STEFANINI</Projeto>
-        <Call_Id>{$reg->Info->RecordingId}</Call_Id>
-        <Nome_Do_Arquivo>{$reg->Info->Filename}</Nome_Do_Arquivo>
-        <Telefone>{$reg->CallData->CallingParty}</Telefone>
-        <Data_Hora_Inicio>$data_hora</Data_Hora_Inicio>
-        <Id_Operador>{$reg->CallData->CallId}</Id_Operador>
-        <Nome_Operador>{$reg->Info->Agent}</Nome_Operador>
-        <Supervisor>João Santos</Supervisor>
-        <Gestor>-</Gestor>
-        <Campanha>NESTLE</Campanha>
-        <Celula>{$reg->CallData->Service}</Celula>
-        <Site>PINHEIROS</Site>
-    </recording>
-</recordings>";
-            file_put_contents($nome_arquivo, $string);
+                $nome_arquivo = substr($reg->Info->Filename, 0, -4).".wav";
+                $arr = ["Projeto"=>"STEFANINI","Call_Id"=>"{$reg->Info->RecordingId}","Nome_Do_Arquivo"=>"{$nome_arquivo}","Telefone"=>"{$reg->CallData->CallingParty}","Data_Hora_Inicio"=>"{$data_hora}","Id_Operador"=>"{$reg->CallData->CallId}","Nome_Operador"=>"{$reg->Info->Agent}","Supervisor"=>"João Santos","Gestor"=>"-","Campanha"=>"NESTLE","Celula"=>"{$reg->CallData->Service}","Site"=>"PINHEIROS","ClientCaptureDate"=>"{$reg->Info->RecordingDateTime}"];
+                array_push($arquivosXml, $arr);
             }
-            unlink($destino);
+            unlink($arquivos['tmp_name']);
+            
             $_SESSION["arquivosXml"] = $arquivosXml;
-
-            return $listaAgentes;
+            $_SESSION['listaAgentes'] = $listaAgentes;
         }
 
         private function xmlBoticario(){
@@ -121,11 +106,11 @@
 
         private function viewAudio(){
             if($_SESSION['operacao'] == "nestle"){
-                $listaAgentes = $this->xmlNestle();
+                $this->xmlNestle();
             }elseif($_SESSION['operacao'] == "boticario"){
-                $listaAgentes = $this->xmlBoticario();
+                $this->xmlBoticario();
             }
-            $_SESSION['listaAgentes'] = $listaAgentes;
+            
             include "views/Stefanini/audio.php";
         }
 
@@ -133,7 +118,6 @@
             set_time_limit(0);
             $maxMin = 5;
             top:
-            $path = $_SERVER['DOCUMENT_ROOT']."/MexConsulting/views/uploadStefanini/";
             $arquivos = isset($_FILES['path']) ? $_FILES['path'] : false;
             $listaAgentes = $_SESSION['listaAgentes'];
             $tma = $_POST['tma'] * 60;
@@ -153,9 +137,7 @@
                 // Testando se os arquivos não são de audio
                 if(!$usado){
                     if($arquivos['type'][$controle] != "audio/wav"){
-                        $destino = $path."naoAudio/".$arquivos['name'][$controle];
-                        array_push($naoAudio,$arquivos['name'][$controle]);
-                        move_uploaded_file($arquivos['tmp_name'][$controle], $destino);
+                        array_push($naoAudio,[$arquivos['name'][$controle],$arquivos['tmp_name'][$controle]]);
                         $usado = true;
                     }
                 }
@@ -163,9 +145,7 @@
                 //Testando se está fora do padrão
                 if(!$usado){
                     if(($duracao['hora'] >= 0 && $duracao['minuto'] > $maxMin && $duracao['segundo'] >= 0) || ($duracao['hora'] == 0 && $duracao['minuto'] == 0 && $duracao['segundo'] < 30) || $arquivos['size'][$controle] == 0){
-                        $destino = $path."foraPadrao/".$arquivos['name'][$controle];
-                        array_push($foraPadrao,$arquivos['name'][$controle]);
-                        move_uploaded_file($arquivos['tmp_name'][$controle], $destino);
+                        array_push($foraPadrao,[$arquivos['name'][$controle],$arquivos['tmp_name'][$controle]]);
                         $usado = true;
                     }
                 }
@@ -181,9 +161,7 @@
                         }
                     }
                     if(!$achou){
-                        $destino = $path."naoEncontrado/".$arquivos['name'][$controle];
-                        array_push($naoEncontrado,$arquivos['name'][$controle]);
-                        move_uploaded_file($arquivos['tmp_name'][$controle], $destino); 
+                        array_push($naoEncontrado,[$arquivos['name'][$controle],$arquivos['tmp_name'][$controle]]);
                         $usado = true;           
                     }
                 }
@@ -197,10 +175,8 @@
                         if($cont < $qtdAudio){
                             foreach($listaAgentes["agentes"][$chave]["audios"] as $audio){
                                 if($arquivos['name'][$controle] == $audio){
-                                    $destino = $path."selecionado/".$arquivos['name'][$controle];
-                                    array_push($selecionado,[$arquivos['name'][$controle],$arquivos['size'][$controle]]);
+                                    array_push($selecionado,[$arquivos['name'][$controle],$arquivos['size'][$controle],$arquivos['tmp_name'][$controle]]);
                                     array_push($listaAgentes["agentes"][$chave]["cont"],[$arquivos['name'][$controle], $duracao]);
-                                    move_uploaded_file($arquivos['tmp_name'][$controle], $destino);
                                     $usado = true;
                                 }
                             }
@@ -212,9 +188,7 @@
                 //Verificando não selecionados
                 if(!$usado){
                     if(!in_array($arquivos['name'][$controle], $selecionado)){
-                        $destino = $path."naoSelecionado/".$arquivos['name'][$controle];
-                        array_push($naoSelecionado,$arquivos['name'][$controle]);
-                        move_uploaded_file($arquivos['tmp_name'][$controle], $destino);
+                        array_push($naoSelecionado,[$arquivos['name'][$controle],$arquivos['tmp_name'][$controle]]);
                         $usado = true;
                     }
                 }
@@ -270,7 +244,7 @@
             $erro = [];
             $resultado = [];
 
-            $path = $_SERVER['DOCUMENT_ROOT']."/MexConsulting/views/uploadStefanini/";
+            $path = $_SERVER['DOCUMENT_ROOT']."/views/uploadStefanini/";
             
             foreach($_SESSION["selecionado"] as $selec){
                 $xml = simplexml_load_file($path."xml/".substr($selec[0], 0, -4).".xml");
@@ -385,7 +359,7 @@
             
             include "views/Stefanini/cm.php";
         }
-        
+
         private function wavDur($file) {
             $fp = fopen($file, 'r');
             if (fread($fp,4) == "RIFF") {

@@ -71,8 +71,6 @@
 
 <!-- create database mex;
 
-drop database mex;
-
 use mex;
 
 create table usuarios(
@@ -86,9 +84,31 @@ create table usuarios(
     ultimo_login DATETIME
 );
 
-drop table usuarios;
+create table chats(
+	id_chat int primary key auto_increment,
+    source_id varchar(100) not null,
+    CorrelationId varchar(100) not null,
+    MiningId varchar(100) not null,
+    metadata text not null,
+    subiu boolean not null,
+    enviado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 
-INSERT INTO usuarios (nome,sobrenome,operacao,email) VALUES ("Monica","Craveiro de Menezes","Mex","monica.craveiro@mexconsulting.com.br");
+create table nestle(
+	id_nestle int primary key auto_increment,
+    nome_arquivo varchar(100) not null,
+    SessionId varchar(100) not null,
+    CorrelationId varchar(100) not null,
+    CurrentMediaLength int not null,
+    TotalMediaLength int not null,
+    MiningId varchar(100) not null,
+    metadata text not null,
+    xml text not null,
+    data_pasta date not null,
+    enviado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 
-select * from usuarios; -->
+SELECT * FROM mex.usuarios;
+SELECT * FROM mex.chats;
+SELECT * FROM mex.nestle; -->
 

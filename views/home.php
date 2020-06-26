@@ -45,7 +45,7 @@
                                 <input value="contato@mexconsulting.com.br" name="from" type="text" hidden />
                             </div>
                             <div class="form-group">
-                                <input value="Contato Site Mex Consulting" name="subject" type="text" hidden />
+                                <input value="Contato Site | Mex Consulting" name="subject" type="text" hidden />
                             </div>
                             <div class="form-group">
                                 <input type="text" class="form-control" name="nome" id="nome" placeholder="Seu nome" required>

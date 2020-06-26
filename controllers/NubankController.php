@@ -29,7 +29,7 @@
 
         private function viewMetadados(){
             set_time_limit(0);
-            $path = $_SERVER['DOCUMENT_ROOT']."/MexConsulting/views/uploadNubank/";
+            $path = $_SERVER['DOCUMENT_ROOT']."/views/uploadNubank/";
             // $path = $_POST['path']."/";
 
             $arquivos = isset($_FILES['path']) ? $_FILES['path'] : false;

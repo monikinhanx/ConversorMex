@@ -36,7 +36,7 @@
             
             <div class="container">
                 <h1 class="mb-5 title">Operação Nestlé</h1>
-                
+                <p class="erro"><?php if(isset($_SESSION['invalido'])) echo $_SESSION['invalido'] ?></p>
                 <form action="/?audio" enctype="multipart/form-data" method="POST">
                     <div class="form-group">
                         <input type="hidden" name="MAX_FILE_SIZE" value="3000000" />
