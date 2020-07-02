@@ -52,6 +52,11 @@
             $controller = new NubankController();
             $controller->acao($rotas);
         break;
+        case "api":
+            include "controllers/NubankController.php";
+            $controller = new NubankController();
+            $controller->acao($rotas);
+        break;
         case "path":
             include "controllers/NubankController.php";
             $controller = new NubankController();
@@ -62,11 +67,11 @@
             $controller = new NubankController();
             $controller->acao($rotas);
         break;
-        case "api":
-            include "controllers/NubankController.php";
-            $controller = new NubankController();
-            $controller->acao($rotas);
-        break;
+        // case "api":
+        //     include "controllers/NubankController.php";
+        //     $controller = new NubankController();
+        //     $controller->acao($rotas);
+        // break;
         case "stefanini":
             include "controllers/StefaniniController.php";
             $controller = new StefaniniController();
