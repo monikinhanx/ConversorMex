@@ -75,7 +75,7 @@
                 die;
             }
 
-            $resultado = array(array("Eureka ID","source_id","agente","Grade - Score TOM DE VOZ","Categories","Rating"));
+            $resultado = array(array("Eureka ID","source_id","agente","actor_squad","actor_affiliation","activity_type","Grade - Score TOM DE VOZ","Categories","Rating"));
 
             while(!empty($search['body'])){
                 foreach($search['body'] as $contato){
@@ -94,9 +94,9 @@
             
                     foreach($nomeCategorias as $cat){
                         if(in_array($cat, $catHit)){
-                            array_push($resultado,array($contato['Contact']['Id'],$contato['Others']['UDF_text_17'],$contato['Attributes']['Agent'],$weight,$cat,"Hit"));
+                            array_push($resultado,array($contato['Contact']['Id'],$contato['Others']['UDF_text_17'],$contato['Attributes']['Agent'],$contato['Attributes']['UDF_text_04'],$contato['Attributes']['UDF_text_13'],$contato['Attributes']['UDF_text_02'],$weight,$cat,"Hit"));
                         }else{
-                            array_push($resultado,array($contato['Contact']['Id'],$contato['Others']['UDF_text_17'],$contato['Attributes']['Agent'],$weight,$cat,"Miss"));
+                            array_push($resultado,array($contato['Contact']['Id'],$contato['Others']['UDF_text_17'],$contato['Attributes']['Agent'],$contato['Attributes']['UDF_text_04'],$contato['Attributes']['UDF_text_13'],$contato['Attributes']['UDF_text_02'],$weight,$cat,"Miss"));
                         }
                     }
                 }
