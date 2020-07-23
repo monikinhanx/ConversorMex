@@ -95,7 +95,7 @@
                     foreach($nomeCategorias as $cat){
                         if(in_array($cat, $catHit)){
                             array_push($resultado,array($contato['Contact']['Id'],$contato['Others']['UDF_text_17'],$contato['Attributes']['Agent'],$contato['Attributes']['UDF_text_04'],$contato['Attributes']['UDF_text_13'],$contato['Attributes']['UDF_text_02'],$weight,$cat,"Hit"));
-                        }else{
+                        }else{ 
                             array_push($resultado,array($contato['Contact']['Id'],$contato['Others']['UDF_text_17'],$contato['Attributes']['Agent'],$contato['Attributes']['UDF_text_04'],$contato['Attributes']['UDF_text_13'],$contato['Attributes']['UDF_text_02'],$weight,$cat,"Miss"));
                         }
                     }
