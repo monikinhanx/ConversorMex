@@ -1,3 +1,5 @@
+/* ==========================================| FONTES |========================================== */
+
 @font-face {
     font-family: museo-sans300;
     src: url('fonts/Museo 300.otf') format('opentype');
@@ -25,22 +27,62 @@
     font-style: normal;
 }
 
-body{
+/* ==========================================| GERAL |========================================== */
+
+*{
     margin: 0;
     padding: 0;
     font-family: myriad-pro-light, sans-serif;
     font-size: 16px;
     color:#4d5858;
+    box-sizing: border-box;
+    -webkit-box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    vertical-align:middle;
 }
 
-main{
+.title{
+    font-family: museo-sans900, sans-serif;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: #415a78;
+}
+
+.sub{
+    font-size: 1.3rem;
+    margin-bottom: 3rem;
+}
+
+/* ==========================================| MENU |========================================== */
+
+header .navbar{
+    background-color: #415a78;
+    box-shadow: 0 0.5rem 0.5rem 0 rgba(0,0,0,0.4);
+}
+
+header .header-logo{
+    width: 10rem;
+    height: 5rem;
+    margin-right: 3rem;
+}
+
+/* ==========================================| STEFANINI - SELEÇÃO |========================================== */
+
+#selecao{
+    /* width: 100vw;
+    height: 100vh; */
+    text-align: center;
+}
+
+
+/* main{
     width: 100vw;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
-}
+} */
 
 .box{
     width: 50%;
@@ -63,18 +105,6 @@ main{
 .logo{
     width: 15rem;
     height: 10rem;
-}
-
-.title{
-    font-family: museo-sans900, sans-serif;
-    font-size: 2rem;
-    margin-bottom: 2rem;
-    color: #415a78;
-}
-
-.sub{
-    font-size: 1.3rem;
-    margin-bottom: 3rem;
 }
 
 .link{
