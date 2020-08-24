@@ -1,6 +1,14 @@
 <?php
     session_start();
 
+    use GuzzleHttp\Client;
+    use GuzzleHttp\Exception\RequestException;
+    use GuzzleHttp\Psr7\Request;
+    use GuzzleHttp\Psr7;
+    use GuzzleHttp\Exception\ClientException;
+    
+    require 'vendor/autoload.php';
+
     include_once "models/Ingestion.php";
 
     class NubankController{
@@ -18,14 +26,34 @@
                 case "metadados":
                     $this->viewMetadados(); //Mostra pagina confirmação de metadados
                 break;
-                // case "api":
-                //     $this->viewApi(); //Mostra pagina inicial
-                // break;
+                case "chats":
+                    $this->viewChats(); //Mostra pagina inicial
+                break;
+                case "upload":
+                    $this->uploadChats(); //Mostra pagina inicial
+                break;
             }
         }
 
         private function viewNubank(){
             include "views/Nubank/nubank.php";
+        }
+        
+        private function viewChats(){
+            include "views/Nubank/chats.php";
+        }
+
+        private function uploadChats(){
+            set_time_limit(0);
+            $path = $_SERVER['DOCUMENT_ROOT']."/views/uploadNubank/";
+            // $path = $_POST['path']."/";
+
+            $arquivos = isset($_FILES['chat']) ? $_FILES['chat'] : false;
+
+            for ($i = 0; $i < count($arquivos['name']); $i++){ 
+                $destino = $path.$arquivos['name'][$i];
+                move_uploaded_file($arquivos['tmp_name'][$i], $destino);
+            }
         }
 
         private function api(){
@@ -75,7 +103,12 @@
                 die;
             }
 
-            $resultado = array(array("Eureka ID","source_id","agente","actor_squad","actor_affiliation","activity_type","Grade - Score TOM DE VOZ","Categories","Rating"));
+            header('Cache-Control: max-age=0');
+            header('Content-Type: text/csv; charset=utf-8');
+            header('Content-Disposition: attachment; filename="export_CM.csv"');
+            $output = fopen('php://output', 'w+');
+
+            fputcsv($output, array("Eureka ID","source_id","agente","actor_squad","actor_affiliation","activity_type","Grade - Score TOM DE VOZ","Categories","Rating"));
 
             while(!empty($search['body'])){
                 foreach($search['body'] as $contato){
@@ -94,17 +127,18 @@
             
                     foreach($nomeCategorias as $cat){
                         if(in_array($cat, $catHit)){
-                            array_push($resultado,array($contato['Contact']['Id'],$contato['Others']['UDF_text_17'],$contato['Attributes']['Agent'],$contato['Attributes']['UDF_text_04'],$contato['Attributes']['UDF_text_13'],$contato['Attributes']['UDF_text_02'],$weight,$cat,"Hit"));
-                        }else{ 
-                            array_push($resultado,array($contato['Contact']['Id'],$contato['Others']['UDF_text_17'],$contato['Attributes']['Agent'],$contato['Attributes']['UDF_text_04'],$contato['Attributes']['UDF_text_13'],$contato['Attributes']['UDF_text_02'],$weight,$cat,"Miss"));
+                            fputcsv($output, array($contato['Contact']['Id'],$contato['Others']['UDF_text_17'],$contato['Attributes']['Agent'],$contato['Attributes']['UDF_text_04'],$contato['Attributes']['UDF_text_13'],$contato['Attributes']['UDF_text_02'],$weight,$cat,"Hit"));
+                        }else{
+                            fputcsv($output, array($contato['Contact']['Id'],$contato['Others']['UDF_text_17'],$contato['Attributes']['Agent'],$contato['Attributes']['UDF_text_04'],$contato['Attributes']['UDF_text_13'],$contato['Attributes']['UDF_text_02'],$weight,$cat,"Miss"));
                         }
                     }
                 }
                 $page++;
                 $search = $this->getSearch($jwt['body'],$StartDate,$EndDate,$page);
             }
+            fclose( $output );
             $db->relatorios($username,$StartDate,$EndDate,"Relatório Gerado com Sucesso");
-            $this->generateAndDownloadFileCSV($resultado);
+            // $this->generateAndDownloadFileCSV($resultado);
         }
 
         private function callAPI($method, $header, $string, $endpoint){
@@ -115,10 +149,10 @@
                     'content' => $string                            
                 )
             ));
-            
+
             $contents = file_get_contents($endpoint, null, $context);            
             $body = json_decode($contents,true);
-
+            
             $resposta = ["header" => $http_response_header, "body" => $body];
             
             return $resposta;
@@ -127,11 +161,13 @@
         private function getJWT($username, $password){
             $method = 'POST';
             $header = "Content-type: application/json; charset=utf-8\r\n";
+            // $header = ["Content-type" => "application/json; charset=utf-8"];
             $string = "{
                 \"Username\": \"{$username}\",
                 \"Password\": \"{$password}\",
                 \"ApiKey\": \"nubank\"
             }";
+
             $endpoint = "https://sapi.callminer.net/security/getToken";
     
             $resposta = $this->callAPI($method, $header, $string, $endpoint);

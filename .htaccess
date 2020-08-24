@@ -3,3 +3,16 @@
 
   RewriteRule ^([a-z0-9-]+)/$ ?index.php?$1 [NC,L]
 </IfModule>
+
+<IfModule mod_fcgid.c>
+  # 20MB should be enough
+  MaxRequestLen 20000000
+</IfModule>
+
+php_value max_input_time 100000
+php_value max_execution_time 100000
+php_value upload_max_filesize 8G
+php_value memory_limit 16G
+php_value post_max_size 10G
+php_value max_file_uploads 75000
+php_value upload_tmp_dir "G:\PleskVhosts\nuveto.com.br\httpdocs\mexconsulting\views\uploadNubank\"

@@ -239,3 +239,12 @@ form{
         top: 2%;
     }
 }
+
+/* ==========================================| NUBANK |========================================== */
+
+#nubank{
+    background: url('../img/BG.jpg') no-repeat center center;
+    background-size: cover;
+    width: 100vw;
+    height: 100vh;
+}

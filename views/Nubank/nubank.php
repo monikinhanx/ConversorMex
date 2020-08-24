@@ -1,5 +1,4 @@
 <?php
-    $bg = "background: url('views/img/BG.jpg') no-repeat center center; background-size: cover;";
 
     switch($_SESSION['nubank']){
         case "data":
@@ -38,10 +37,10 @@
     <!-- CSS Personalizado -->
     <link rel="stylesheet" href="views/css/style.css">
 </head>
-<body style="<?= $bg ?>">
-    <main class="d-flex justify-content-center align-items-center">
+<body>
+    <main id="nubank" class="d-flex justify-content-center align-items-center">
         <section class="box-interno">
-            <img src="views/img/Logo_Mex.png" width="200" height="150" class="d-inline-block" alt="">
+            <img src="views/img/Logo_Mex.png" width="200" height="150" class="d-inline-block" alt="Logo Mex Consulting">
             <h1 class="title">Extração de Relatório</h1>
             <p class="erro"><?=$msg?></p>
             <form action="/?api" method="post" enctype="multipart/form-data">

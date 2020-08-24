@@ -67,11 +67,16 @@
             $controller = new NubankController();
             $controller->acao($rotas);
         break;
-        // case "api":
-        //     include "controllers/NubankController.php";
-        //     $controller = new NubankController();
-        //     $controller->acao($rotas);
-        // break;
+        case "chats":
+            include "controllers/NubankController.php";
+            $controller = new NubankController();
+            $controller->acao($rotas);
+        break;
+        case "upload":
+            include "controllers/NubankController.php";
+            $controller = new NubankController();
+            $controller->acao($rotas);
+        break;
         case "stefanini":
             include "controllers/StefaniniController.php";
             $controller = new StefaniniController();
