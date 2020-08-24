@@ -36,6 +36,7 @@
         }
 
         private function viewNubank(){
+            $_SESSION['title'] = "Mex Consulting - Nubank";
             include "views/Nubank/nubank.php";
         }
         

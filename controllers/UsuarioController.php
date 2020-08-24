@@ -5,7 +5,6 @@
 
     class UsuarioController{
 
-        // Direcionando para a pagina correta
         public function acao($rotas){
             switch($rotas){
                 case "cadastrousuario":
@@ -146,7 +145,7 @@
         private function deslogarUsuario(){
             session_gc();
             session_destroy(); //destroi sessão
-            header('Location:/?'); //direciona pra pagina de login
+            header('Location:/'); //direciona pra pagina de login
         }
 
         private function alteraSenha(){

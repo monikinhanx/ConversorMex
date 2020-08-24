@@ -11,6 +11,7 @@
         }
 
         private function viewHome(){
+            $_SESSION['title'] = "Mex Consulting";
             include "views/home.php";
         }
     }

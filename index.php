@@ -7,6 +7,11 @@
             $controller = new HomeController();
             $controller->acao($rotas);
         break;
+        case "email":
+            include "controllers/EmailController.php";
+            $controller = new EmailController();
+            $controller->acao($rotas);
+        break;
         case "cadastrousuario":
             include "controllers/UsuarioController.php";
             $controller = new UsuarioController();

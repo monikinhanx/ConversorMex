@@ -53,6 +53,21 @@
     margin-bottom: 3rem;
 }
 
+main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ==========================================| HOME |========================================== */
+
+#home{
+    background: url('../img/Campaign-Analytics-Banking.jfif') no-repeat center center;
+    background-size: cover;
+    width: 100vw;
+    height: 100vh;
+}
+
 /* ==========================================| MENU |========================================== */
 
 header .navbar{
