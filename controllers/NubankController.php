@@ -1,14 +1,6 @@
 <?php
     session_start();
 
-    use GuzzleHttp\Client;
-    use GuzzleHttp\Exception\RequestException;
-    use GuzzleHttp\Psr7\Request;
-    use GuzzleHttp\Psr7;
-    use GuzzleHttp\Exception\ClientException;
-    
-    require 'vendor/autoload.php';
-
     include_once "models/Ingestion.php";
 
     class NubankController{
@@ -20,14 +12,14 @@
                 case "api":
                     $this->api(); //Mostra pagina inicial nubank
                 break;
+                case "chats":
+                    $this->viewChats(); //Mostra pagina inicial
+                break;
                 case "path":
                     $this->viewPath(); //Mostra pagina de escolha dos arquivos
                 break;
                 case "metadados":
                     $this->viewMetadados(); //Mostra pagina confirmação de metadados
-                break;
-                case "chats":
-                    $this->viewChats(); //Mostra pagina inicial
                 break;
                 case "upload":
                     $this->uploadChats(); //Mostra pagina inicial
@@ -41,7 +33,42 @@
         }
         
         private function viewChats(){
-            include "views/Nubank/chats.php";
+            $_SESSION['title'] = "Mex Consulting - Nubank";
+            
+            $ftp_server = "104.214.56.69";
+            $ftp_user_name = "Stefanini";
+            $ftp_user_pass = "Stefanini@2020";
+
+            $arquivo = fopen ("ftp://$ftp_user_name:$ftp_user_pass@$ftp_server/monica.txt", "r");
+            if (!$arquivo) {
+                echo "<p>Não posso abrir o arquivo para leitura</p>";
+                exit;
+            }
+            $texto="";
+            while ($linha = fgets($arquivo,1024)) {
+                if ($linha) $texto .= $linha;
+            }
+            echo $texto;
+            fclose ($arquivo);
+            die;
+
+
+            $conn_id = ftp_connect($ftp_server);
+
+            // login com nome de usuário e senha
+            $login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
+
+            $dir = ftp_nlist($conn_id, ".");
+
+            var_dump($dir);
+
+            // mostra o diretório atual
+            // echo ftp_pwd($conn_id); // /
+
+            // fecha esta conexão
+            ftp_close($conn_id);
+
+            // include "views/Nubank/chats.php";
         }
 
         private function uploadChats(){
@@ -412,30 +439,6 @@
             $_SESSION["qtdErro"] = count($erro);
 
             include "views/Nubank/api.php";
-        }
-
-        protected function before_last ($texto1, $inthat){
-            return substr($inthat, 0, $this->strrevpos($inthat, $texto1));
-        }
-    
-        protected function strrevpos($instr, $needle){
-            $rev_pos = strpos (strrev($instr), strrev($needle));
-            if ($rev_pos===false) return false;
-            else return strlen($instr) - $rev_pos - strlen($needle);
-        }
-    
-        protected function after ($texto1, $inthat){
-            if (!is_bool(strpos($inthat, $texto1)))
-            return substr($inthat, strpos($inthat,$texto1)+strlen($texto1));
-        }
-    
-        protected function between ($texto1, $that, $inthat){
-            return $this->before ($that, $this->after($texto1, $inthat));
-        }
-    
-        protected function before ($texto1, $inthat){
-            
-            return substr($inthat, 0, strpos($inthat, $texto1));
         }
     }
 ?>

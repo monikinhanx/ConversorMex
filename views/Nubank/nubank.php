@@ -21,8 +21,8 @@
 ?>
 
     <main id="nubank">
-        <section class="box-interno">
-            <img src="views/img/Logo_Mex.png" width="200" height="150" class="d-inline-block" alt="Logo Mex Consulting">
+        <section class="box">
+            <img src="views/img/Logo_Mex.png" class="logo" alt="Logo Mex Consulting">
             <h1 class="title">Extração de Relatório</h1>
             <p class="erro"><?=$msg?></p>
             <form action="/?api" method="post" enctype="multipart/form-data">
@@ -46,7 +46,7 @@
                         <input type="date" class="form-control" name="datafim" id="datafim" max="<?=date('Y-m-d')?>" required>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-mex mb-5">Extrair</button>
+                <button type="submit" class="btn btn-mex">Extrair</button>
             </form>
         </section>
     </main>
